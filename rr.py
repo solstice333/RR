@@ -38,7 +38,7 @@ def fmt_rr_data(data: RewRiskData) -> str:
       f"\nshares={data.shares}" +\
       f"\nratio={data.ratio:.2f}" +\
       f"\ngain=${data.gain}" +\
-      f"\nloss=${data.loss}"
+      f"\nloss=${data.loss:.2f}"
 
 def main() -> None:
    parser = argparse.ArgumentParser(description="calculates reward to risk")
