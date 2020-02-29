@@ -30,5 +30,12 @@ position_size=$1000
 shares=58
 ratio=3.50
 gain=$406.0
-loss=$115.9999999999999
+loss=$116.00
+
+$ python3 rr.py -p 2000 17.22 24.22 15.22
+position_size=$2000.0
+shares=116
+ratio=3.50
+gain=$812.0
+loss=$232.00
 ```
