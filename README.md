@@ -7,14 +7,14 @@ simple reward to risk calculator
 ## Usage
 
 ```
-usage: rr.py [-h] [-p POSITION_SIZE] BUY SELL STOP
+usage: rr.py [-h] [-p POSITION_SIZE] BUY STOP SELL
 
 calculates reward to risk
 
 positional arguments:
   BUY                   purchase price
-  SELL                  price target
   STOP                  stop loss
+  SELL                  price target
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -25,14 +25,16 @@ optional arguments:
 ## Example
 
 ```
-$ python3 rr.py 17.22 24.22 15.22
+$ python3 rr.py 17.22 15.22 24.22 
 position_size=$1000
 shares=58
 ratio=3.50
 gain=$406.0
 loss=$116.00
 
-$ python3 rr.py -p 2000 17.22 24.22 15.22
+# I like to put the stuff that I modify frequently at the end of the argument list. 
+# For example the sell price target
+$ python3 rr.py 17.22 15.22 -p 2e3 24.22 
 position_size=$2000.0
 shares=116
 ratio=3.50

@@ -48,8 +48,8 @@ def main() -> None:
       type=float
    )
    parser.add_argument("BUY", help="purchase price", type=float)
-   parser.add_argument("SELL", help="price target", type=float)
    parser.add_argument("STOP", help="stop loss", type=float)
+   parser.add_argument("SELL", help="price target", type=float)
    args = parser.parse_args()
 
    rr = RewRiskCalc(args.position_size)
