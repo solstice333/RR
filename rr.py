@@ -37,7 +37,7 @@ def fmt_rr_data(data: RewRiskData) -> str:
    return f"position_size=${data.position_size}" +\
       f"\nshares={data.shares}" +\
       f"\nratio={data.ratio:.2f}" +\
-      f"\ngain=${data.gain}" +\
+      f"\ngain=${data.gain:.2f}" +\
       f"\nloss=${data.loss:.2f}"
 
 def main() -> None:
