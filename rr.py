@@ -40,6 +40,9 @@ def fmt_rr_data(data: RewRiskData) -> str:
       f"\ngain=${data.gain:.2f}" +\
       f"\nloss=${data.loss:.2f}"
 
+def floatify(expr: str) -> float:
+   return float(eval(expr))
+
 def main() -> None:
    parser = argparse.ArgumentParser(description="calculates reward to risk")
    parser.add_argument("-p", "--position-size", 
@@ -47,9 +50,12 @@ def main() -> None:
       help="total value of position. Defaults to $1000", 
       type=float
    )
-   parser.add_argument("BUY", help="purchase price", type=float)
-   parser.add_argument("STOP", help="stop loss", type=float)
-   parser.add_argument("SELL", help="price target", type=float)
+   parser.add_argument("BUY", 
+      help="purchase price. This accepts expressions", type=floatify)
+   parser.add_argument("STOP", 
+      help="stop loss. This accepts expressions", type=floatify)
+   parser.add_argument("SELL", 
+      help="price target. This accepts expressions", type=floatify)
    args = parser.parse_args()
 
    rr = RewRiskCalc(args.position_size)

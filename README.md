@@ -12,9 +12,9 @@ usage: rr.py [-h] [-p POSITION_SIZE] BUY STOP SELL
 calculates reward to risk
 
 positional arguments:
-  BUY                   purchase price
-  STOP                  stop loss
-  SELL                  price target
+  BUY                   purchase price. This accepts expressions
+  STOP                  stop loss. This accepts expressions
+  SELL                  price target. This accepts expressions
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -40,4 +40,12 @@ shares=116
 ratio=3.50
 gain=$812.0
 loss=$232.00
+
+# Expressions are allowed, for example for the STOP argument
+$ python3 rr.py 37 "33-1" 52 -p 1000  
+position_size=$1000.0
+shares=27
+ratio=3.00
+gain=$405.00
+loss=$135.00 
 ```
