@@ -10,6 +10,7 @@ class RewRiskData(NamedTuple):
    ratio: float
    gain: float
    loss: float
+   stop: float
 
 class RewRiskCalc:
    def __init__(self, sz: float) -> None:
@@ -30,7 +31,8 @@ class RewRiskCalc:
          shares=shares, 
          ratio=(sell - buy) / (buy - stop),
          gain=(sell - buy)*shares,
-         loss=(buy - stop)*shares
+         loss=(buy - stop)*shares,
+         stop=stop
       )
 
 def fmt_rr_data(data: RewRiskData) -> str:
@@ -38,7 +40,8 @@ def fmt_rr_data(data: RewRiskData) -> str:
       f"\nshares={data.shares}" +\
       f"\nratio={data.ratio:.2f}" +\
       f"\ngain=${data.gain:.2f}" +\
-      f"\nloss=${data.loss:.2f}"
+      f"\nloss=${data.loss:.2f}" +\
+      f"\nstop=${data.stop:.2f}"
 
 def floatify(expr: str) -> float:
    return float(eval(expr))
