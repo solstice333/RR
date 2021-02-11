@@ -14,26 +14,21 @@ class RewRiskData(NamedTuple):
    target: float
 
 class RewRiskCalc:
-   def __init__(self, sz: float) -> None:
+   def __init__(self, *, sz: float, rr: int) -> None:
       self._sz = sz
+      self._rr = rr
 
-   @property
-   def sz(self) -> float:
-      return self._sz
-
-   @sz.setter
-   def sz(self, val: float) -> None:
-      self._sz = val 
-
-   def rewrisk(self, entry: float, stop: float, target: float) -> RewRiskData:
+   def rewrisk(self, *, entry: float, target: float) -> RewRiskData:
       shares = int(self._sz / entry)
+      dist = (target - entry)/self._rr
+      stop = entry - dist
       return RewRiskData(
          position_size=self._sz, 
+         ratio=self._rr,
          shares=shares, 
-         ratio=(target - entry) / (entry - stop),
+         stop=stop,
          gain=(target - entry)*shares,
          loss=(entry - stop)*shares,
-         stop=stop,
          target=target
       )
 
@@ -56,16 +51,17 @@ def main() -> None:
       help="total value of position. Defaults to $1000", 
       type=float
    )
+   parser.add_argument("-r", "--rr",
+      default=3,
+      help="reward to risk ratio as an integer. Defaults to 3",
+      type=int)
    parser.add_argument("ENTRY", 
       help="purchase price. This accepts expressions", type=floatify)
-   parser.add_argument("STOP", 
-      help="stop loss. This accepts expressions", type=floatify)
    parser.add_argument("TARGET", 
       help="price target. This accepts expressions", type=floatify)
    args = parser.parse_args()
 
-   rr = RewRiskCalc(args.position_size)
-   print(fmt_rr_data(rr.rewrisk(args.ENTRY, args.STOP, args.TARGET)))
+   rr = RewRiskCalc(sz=args.position_size, rr=args.rr)
+   print(fmt_rr_data(rr.rewrisk(entry=args.ENTRY, target=args.TARGET)))
 
-if __name__ == '__main__':
-   main()
+if __name__ == '__main__': main()
