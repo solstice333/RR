@@ -1,67 +1,106 @@
 #!/usr/bin/env python3
 import argparse
-import sys
 
-from typing import NamedTuple
+from pprint import pprint
+from dataclasses import dataclass
 
-class RewRiskData(NamedTuple):
-   position_size: float
-   shares: int
-   ratio: float
-   gain: float
-   loss: float
-   stop: float
-   target: float
 
-class RewRiskCalc:
-   def __init__(self, *, sz: float, rr: int) -> None:
-      self._sz = sz
-      self._rr = rr
+@dataclass
+class RewardRiskData:
+    shares: int
+    entry: str
+    target: str
+    stop: str
+    gain: str
+    loss: str
+    position_size: str
+    ratio: float
 
-   def rewrisk(self, *, entry: float, target: float) -> RewRiskData:
-      shares = int(self._sz / entry)
-      dist = (target - entry)/self._rr
-      stop = entry - dist
-      return RewRiskData(
-         position_size=self._sz, 
-         ratio=self._rr,
-         shares=shares, 
-         stop=stop,
-         gain=(target - entry)*shares,
-         loss=(entry - stop)*shares,
-         target=target
-      )
 
-def fmt_rr_data(data: RewRiskData) -> str:
-   return f"position_size=${data.position_size}" +\
-      f"\nshares={data.shares}" + \
-      f"\nratio={data.ratio:.2f}" + \
-      f"\ngain=${data.gain:.2f}" + \
-      f"\nloss=${data.loss:.2f}" + \
-      f"\nstop=${data.stop:.2f}" + \
-      f"\ntarget=${data.target:.2f}"
+class RewardRiskCalculator:
+    def __init__(self, *, rr: int) -> None:
+        self._rr = rr
+
+    def calculate_reward_risk_ratio(
+            self,
+            *,
+            gain_target: float,
+            entry: float,
+            target: float
+    ) -> RewardRiskData:
+        size_unit = 1
+        while True:
+            try:
+                shares = size_unit / entry
+                gain = (target - entry) * shares
+                adjustment_factor = gain_target / gain
+                break
+            except ZeroDivisionError:
+                size_unit *= 10
+                print(
+                    f"trying again on adjustment factor "
+                    f"with size_unit={size_unit}")
+                pass
+
+        shares = int(size_unit / entry * adjustment_factor + 1)
+        delta_unit = (target - entry) / self._rr
+        stop = entry - delta_unit
+        gain = (target - entry) * shares
+        loss = (entry - stop) * shares
+
+        return RewardRiskData(
+            ratio=self._rr,
+            shares=shares,
+            entry=f"${entry:.2f}",
+            stop=f"${stop:.2f}",
+            target=f"${target:.2f}",
+            gain=f"${gain:.2f}",
+            loss=f"${loss:.2f}",
+            position_size=f"${entry * shares:.2f}"
+        )
+
 
 def floatify(expr: str) -> float:
-   return float(eval(expr))
+    return float(eval(expr))
+
 
 def main() -> None:
-   parser = argparse.ArgumentParser(description="calculates reward to risk")
-   parser.add_argument("-p", "--position-size", 
-      default=1000,
-      help="total value of position. Defaults to $1000", 
-      type=float
-   )
-   parser.add_argument("-r", "--rr",
-      default=3,
-      help="reward to risk ratio as an integer. Defaults to 3",
-      type=int)
-   parser.add_argument("ENTRY", 
-      help="purchase price. This accepts expressions", type=floatify)
-   parser.add_argument("TARGET", 
-      help="price target. This accepts expressions", type=floatify)
-   args = parser.parse_args()
+    parser = argparse.ArgumentParser(description="calculates reward to risk")
+    parser.add_argument(
+        "-r",
+        "--rr",
+        default=3,
+        help="reward to risk ratio as an integer. Defaults to 3",
+        type=int
+    )
+    parser.add_argument(
+        "-g",
+        "--gain-target",
+        default=300,
+        help="gain target",
+        type=float
+    )
+    parser.add_argument(
+        "ENTRY",
+        help="purchase price. This accepts expressions",
+        type=floatify
+    )
+    parser.add_argument(
+        "TARGET",
+        help="price target. This accepts expressions",
+        type=floatify
+    )
+    args = parser.parse_args()
 
-   rr = RewRiskCalc(sz=args.position_size, rr=args.rr)
-   print(fmt_rr_data(rr.rewrisk(entry=args.ENTRY, target=args.TARGET)))
+    rr = RewardRiskCalculator(rr=args.rr)
+    pprint(
+        rr.calculate_reward_risk_ratio(
+            gain_target=args.gain_target,
+            entry=args.ENTRY,
+            target=args.TARGET
+        )
+    )
 
-if __name__ == '__main__': main()
+
+if __name__ == '__main__':
+    main()
