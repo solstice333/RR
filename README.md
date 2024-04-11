@@ -2,12 +2,12 @@
 
 ## Description
 
-simple reward to risk calculator
+Reward to risk calculator. Displays information in the order of how one would input information into Fidelity Active Trader Pro OTOCO form
 
 ## Usage
 
 ```
-usage: rr.py [-h] [-p POSITION_SIZE] [-r RR] ENTRY TARGET
+usage: rr.py [-h] [-r RR] [-g GAIN_TARGET] ENTRY TARGET
 
 calculates reward to risk
 
@@ -15,22 +15,23 @@ positional arguments:
   ENTRY                 purchase price. This accepts expressions
   TARGET                price target. This accepts expressions
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  -p POSITION_SIZE, --position-size POSITION_SIZE
-                        total value of position. Defaults to $1000
   -r RR, --rr RR        reward to risk ratio as an integer. Defaults to 3
+  -g GAIN_TARGET, --gain-target GAIN_TARGET
+                        gain target
 ```
 
 ## Example
 
 ```
-python3 rr.py -r 3 15.70 16.24 -p 9e3 
-position_size=$9000.0
-shares=573
-ratio=3.00
-gain=$309.42
-loss=$103.14
-stop=$15.52
-target=$16.24
+PS C:\Users\knavero\Dropbox\python_workspace\RR> python .\rr.py -g 900 -r 3 10.60 11.02                                       
+RewardRiskData(shares=2143,
+               entry='$10.60',
+               target='$11.02',
+               stop='$10.46',
+               gain='$900.06',
+               loss='$300.02',
+               position_size='$22715.80',
+               ratio=3)
 ```

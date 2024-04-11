@@ -3,6 +3,7 @@ import argparse
 
 from pprint import pprint
 from dataclasses import dataclass
+from argparse import ArgumentDefaultsHelpFormatter
 
 
 @dataclass
@@ -65,12 +66,17 @@ def floatify(expr: str) -> float:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="calculates reward to risk")
+    parser = argparse.ArgumentParser(
+        description="Reward to risk calculator. Displays information in the "
+                    "order of how one would input information into Fidelity "
+                    "Active Trader Pro OTOCO form",
+        formatter_class=ArgumentDefaultsHelpFormatter
+    )
     parser.add_argument(
         "-r",
         "--rr",
         default=3,
-        help="reward to risk ratio as an integer. Defaults to 3",
+        help="reward to risk ratio as an integer",
         type=int
     )
     parser.add_argument(
