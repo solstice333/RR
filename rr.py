@@ -26,9 +26,9 @@ def main() -> None:
     )
     parser.add_argument(
         "-g",
-        "--gain-target",
+        "--total-gain",
         default=300,
-        help="gain target",
+        help="total realized gain",
         type=float
     )
     parser.add_argument(
@@ -40,51 +40,40 @@ def main() -> None:
     )
     parser.add_argument(
         "ENTRY",
-        help="purchase price. This accepts expressions",
+        help="objective entry price",
         type=floatify
     )
     parser.add_argument(
         "TARGET",
-        help="price target. This accepts expressions",
+        help="target price",
         type=floatify
     )
     args = parser.parse_args()
 
-    size_unit = 1
-    risk_reward = args.rr
-    gain_target: float = args.gain_target
+    reward_risk = args.rr
+    total_gain: float = args.total_gain
+    prev_loss: float = args.prev_loss
     entry: float = args.ENTRY
     target: float = args.TARGET
-    prev_loss: float = args.prev_loss
-    while True:
-        try:
-            shares = size_unit / entry
-            gain = (target - entry) * shares
-            adjustment_factor = gain_target / gain
-            break
-        except ZeroDivisionError:
-            size_unit *= 10
-            print(
-                f"trying again on adjustment factor "
-                f"with size_unit={size_unit}")
-            pass
 
-    shares = int(size_unit / entry * adjustment_factor + 1)
-    delta_unit = (target - entry) / risk_reward
-    stop = entry - delta_unit
-    gain = (target - entry) * shares
-    loss = (entry - stop) * shares
+    gain_single_share = target - entry
+    unit = gain_single_share/reward_risk
+    stop_price = entry - unit
+
+    quantity = total_gain/gain_single_share
+    loss_single_share = entry - stop_price
+    total_loss = loss_single_share*quantity
 
     json.dump(
         {
-            "quantity": shares,
+            "quantity": quantity,
             "limit price buy": f"${entry:.2f}",
             "limit price sell": f"${target:.2f}",
-            "stop price loss": f"${stop:.2f}",
-            "total realized gain": f"${gain:.2f}",
-            "total realized loss": f"${loss:.2f}",
-            "ratio": args.rr,
-            "position_size": f"${entry * shares:.2f}"
+            "stop price loss": f"${stop_price:.2f}",
+            "total realized gain": f"${total_gain:.2f}",
+            "total realized loss": f"${total_loss:.2f}",
+            "ratio": reward_risk,
+            "position_size": f"${entry * quantity:.2f}"
         },
         sys.stdout,
         indent=4
