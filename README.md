@@ -2,7 +2,7 @@
 
 ## Description
 
-Reward to risk calculator. Displays information in the order of how one would input information into Fidelity Active Trader Pro OTOCO form
+Given risk/reward, desired total realized gain, objective entry, and target, print the information bound to those parameters that should be entered into a Fidelity Active Trader Pro OTOCO form.
 
 ## Usage
 
