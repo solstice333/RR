@@ -9,8 +9,9 @@ Given risk/reward, desired total realized gain, objective entry, and target, pri
 ```
 usage: rr.py [-h] [-v] [-r RR] [-g TOTAL_GAIN] [-l PREV_LOSS] ENTRY TARGET
 
-Reward to risk calculator. Displays information in the order of how one would
-input information into Fidelity Active Trader Pro OTOCO form
+Given risk/reward, desired total realized gain, objective entry, and target,
+print the information bound to those parameters that should be entered into a
+Fidelity Active Trader Pro OTOCO form
 
 positional arguments:
   ENTRY                 objective entry price
