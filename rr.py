@@ -14,9 +14,10 @@ def floatify(expr: str) -> float:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Reward to risk calculator. Displays information in the "
-                    "order of how one would input information into Fidelity "
-                    "Active Trader Pro OTOCO form",
+        description="Given risk/reward, desired total realized gain, "
+                    "objective entry, and target, print the information bound "
+                    "to those parameters that should be entered into a "
+                    "Fidelity Active Trader Pro OTOCO form",
         formatter_class=ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
