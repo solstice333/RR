@@ -28,10 +28,10 @@ def main() -> None:
     )
     parser.add_argument(
         "-r",
-        "--rr",
+        "--reward-to-risk",
         default=3,
         help="reward to risk ratio as an integer",
-        type=int
+        type=float
     )
     parser.add_argument(
         "-g",
@@ -63,7 +63,7 @@ def main() -> None:
     else:
         logging.basicConfig(level=logging.WARNING)
 
-    reward_risk = args.rr
+    reward_risk: float = args.reward_to_risk
     total_gain: float = args.total_gain
     prev_loss: Optional[float] = args.prev_loss
     entry: float = args.ENTRY
