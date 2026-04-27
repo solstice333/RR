@@ -1,9 +1,7 @@
 import argparse
 import json
-import sys
 import logging
 
-from dataclasses import dataclass
 from argparse import ArgumentDefaultsHelpFormatter
 from typing import Optional
 
@@ -21,28 +19,28 @@ def main() -> None:
         formatter_class=ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
-        "-v",
         "--verbose",
+        "-v",
         action='store_true',
         help="verbose logging output"
     )
     parser.add_argument(
-        "-r",
         "--reward-to-risk",
+        "-r",
         default=3,
         help="reward to risk ratio as an integer",
         type=float
     )
     parser.add_argument(
-        "-g",
         "--total-gain",
+        "-g",
         default=300,
         help="total realized gain",
         type=float
     )
     parser.add_argument(
-        "-l",
         "--prev-loss",
+        "-l",
         help="previous loss to account for adjusted cost basis",
         type=float
     )
@@ -72,10 +70,26 @@ def main() -> None:
     gain_single_share = target - entry
     unit = gain_single_share/reward_risk
     stop_price = entry - unit
-
-    quantity = int(total_gain/gain_single_share)
     loss_single_share = entry - stop_price
-    total_loss = loss_single_share*quantity
+
+    maybe_quantity = int(total_gain/gain_single_share)
+    maybe_total_loss = loss_single_share*maybe_quantity
+    maybe_total_gain = gain_single_share*maybe_quantity
+    distance = abs(maybe_total_gain - total_gain)
+
+    maybe_quantity_plus_one = maybe_quantity + 1
+    maybe_total_loss2 = loss_single_share*maybe_quantity_plus_one
+    maybe_total_gain2 = gain_single_share*maybe_quantity_plus_one
+    distance2 = abs(maybe_total_gain2 - total_gain)
+
+    if distance2 < distance:
+        quantity = maybe_quantity_plus_one
+        total_loss = maybe_total_loss2
+        total_gain = maybe_total_gain2
+    else:
+        quantity = maybe_quantity
+        total_loss = maybe_total_loss
+        total_gain = maybe_total_gain
 
     if prev_loss is None:
         print(
@@ -104,8 +118,8 @@ def main() -> None:
             gain_single_share = target - entry
             unit = gain_single_share/reward_risk
             stop_price = entry - unit
-
             loss_single_share = entry - stop_price
+
             total_loss = loss_single_share*quantity
             total_gain = gain_single_share*quantity
 
@@ -137,7 +151,6 @@ def main() -> None:
                 break
 
             quantity += 1
-
 
         print(
             json.dumps(
